@@ -51,40 +51,38 @@ spec:
               image: cloudflare-sync
               imagePullPolicy: Always
               env:
-                - name: OPNSENSE_IP
+                - name: HOST
                   value: "your_opnsense_ip"
-                - name: API_KEY
+                - name: OPNSENSE_API_KEY
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-sync-secrets
-                      key: api-key
-                - name: API_SECRET
+                      key: opnsense-api-key
+                - name: OPNSENSE_API_SECRET
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-sync-secrets
-                      key: api-secret
-                - name: ZONE_ID
-                  value: "your_zone_id"
-                - name: RECORD_NAME
-                  value: "your_record_name"
-                - name: API_TOKEN
-                  value: "your_api_token"
+                      key: opnsense-api-secret
+                - name: CLOUDFLARE_ZONE_ID
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare-sync-secrets
-                      key: api-token
-          restartPolicy: OnFailure
-          volumes:
-            - name: script-volume
-              configMap:
-                name: cloudflare-sync-script
+                      key: cloudflare-zone-id
+                - name: DNS_RECORD
+                  value: "your_dns_record"
+                - name: CLOUDFLARE_API_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudflare-sync-secrets
+                      key: cloudflare-api-token
 ```
 
 Make sure to create a Kubernetes Secret and ConfigMap for the secrets and script respectively:
 
 ```bash
 kubectl create secret generic cloudflare-sync-secrets \
-  --from-literal=api-key="your_api_key" \
-  --from-literal=api-secret="your_api_secret" \
-  --from-literal=api-token="your_api_token"
+  --from-literal=opnsense-api-key="your_opnsense_api_key" \
+  --from-literal=opnsense-api-secret="your_opnsense_api_secret" \
+  --from-literal=cloudflare-zone-id="your_cloudflare_zone_id" \
+  --from-literal=cloudflare-api-token="your_cloudflare_api_token"
 ```
